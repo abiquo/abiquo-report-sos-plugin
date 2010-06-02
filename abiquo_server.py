@@ -35,7 +35,7 @@ class abiquo_server(sos.plugintools.PluginBase):
         self.addCopySpec("/opt/abiquo-server/tomcat/logs/am.log")
         self.addCopySpec("/opt/abiquo-server/tomcat/logs/nodecollector.log")
 
-        self.addCopySpec("/opt/abiquo-server/conf/")
+        self.addCopySpec("/opt/abiquo-server/config/")
 
         #conf files
         self.addCopySpec("/opt/abiquo-server/tomcat/webapps/am/WEB-INF/classes/conf/config.xml")
