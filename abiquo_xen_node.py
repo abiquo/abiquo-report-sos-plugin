@@ -15,23 +15,26 @@
 import sos.plugintools
 import os
 
-class abiquo_kvm_node(sos.plugintools.PluginBase):
-    """Abiquo server related information
+class abiquo_xen_node(sos.plugintools.PluginBase):
+    """Abiquo xen node related information
     """
     def checkenabled(self):
-       if self.cInfo["policy"].pkgByName("openwsman") and self.cInfo["policy"].pkgByName("kmod-kvm") and self.cInfo["policy"].pkgByName("abiquo-rimp"):
+       if self.cInfo["policy"].pkgByName("openwsman") and self.cInfo["policy"].pkgByName("abiquo-xen") and self.cInfo["policy"].pkgByName("abiquo-rimp"):
           return True
        return False
 
     def setup(self):
-        # KVM log
-        self.addCopySpec("/var/log/libvirt/")
+        # Xen log
+        self.addCopySpec("/var/log/xen/")
         
         #openwsmand conf
         self.addCopySpec("/etc/openwsman/")
 
         #Libvirt conf
         self.addCopySpec("/etc/libvirt/")
+
+        #Xen conf
+        self.addCopySpec("/etc/xen/")
         
         self.collectExtOutput("virsh capabilities")
 

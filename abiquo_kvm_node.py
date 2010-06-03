@@ -16,7 +16,7 @@ import sos.plugintools
 import os
 
 class abiquo_kvm_node(sos.plugintools.PluginBase):
-    """Abiquo server related information
+    """Abiquo kvm node related information
     """
     def checkenabled(self):
        if self.cInfo["policy"].pkgByName("openwsman") and self.cInfo["policy"].pkgByName("kmod-kvm") and self.cInfo["policy"].pkgByName("abiquo-rimp"):
