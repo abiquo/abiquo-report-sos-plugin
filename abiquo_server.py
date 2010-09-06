@@ -21,34 +21,32 @@ class abiquo_server(sos.plugintools.PluginBase):
     """Abiquo server related information
     """
     def checkenabled(self):
-       if self.cInfo["policy"].pkgByName("abiquo-server") or os.path.exists("/opt/abiquo-server"):
+       if self.cInfo["policy"].pkgByName("abiquo-server") or os.path.exists"):
           return True
        return False
 
     def setup(self):
         # tomcat log
-        self.addCopySpec("/opt/abiquo-server/tomcat/logs/catalina.out")
-        self.addCopySpec("/opt/abiquo-server/tomcat/logs/vsm.log")
-        self.addCopySpec("/opt/abiquo-server/tomcat/logs/ssm.log")
-        self.addCopySpec("/opt/abiquo-server/tomcat/logs/server.log")
-        self.addCopySpec("/opt/abiquo-server/tomcat/logs/virtualfactory.log")
-        self.addCopySpec("/opt/abiquo-server/tomcat/logs/am.log")
-        self.addCopySpec("/opt/abiquo-server/tomcat/logs/nodecollector.log")
+        self.addCopySpec("/opt/abiquo/tomcat/logs/catalina.out")
+        self.addCopySpec("/opt/abiquo/tomcat/logs/vsm.log")
+        self.addCopySpec("/opt/abiquo/tomcat/logs/ssm.log")
+        self.addCopySpec("/opt/abiquo/tomcat/logs/server.log")
+        self.addCopySpec("/opt/abiquo/tomcat/logs/virtualfactory.log")
+        self.addCopySpec("/opt/abiquo/tomcat/logs/am.log")
+        self.addCopySpec("/opt/abiquo/tomcat/logs/nodecollector.log")
 
-        self.addCopySpec("/opt/abiquo-server/config/")
+        self.addCopySpec("/opt/abiquo/config/")
 
         #conf files
-        self.addCopySpec("/opt/abiquo-server/tomcat/webapps/am/WEB-INF/classes/conf/config.xml")
-        self.addCopySpec("/opt/abiquo-server/tomcat/webapps/server/WEB-INF/classes/conf/config.xml")
-        self.addCopySpec("/opt/abiquo-server/tomcat/webapps/virtualfactory/WEB-INF/classes/conf/config.xml")
-        self.addCopySpec("/opt/abiquo-server/tomcat/webapps/vsm/WEB-INF/classes/conf/config.xml")
-        self.addCopySpec("/opt/abiquo-server/tomcat/webapps/nodecollector/WEB-INF/classes/conf/config.xml")
-        self.addCopySpec("/opt/abiquo-server/tomcat/conf/Catalina/localhost/server.xml")
-        self.addCopySpec("/opt/abiquo-server/tomcat/conf/Catalina/localhost/bpm-async.xml")
-
+        self.addCopySpec("/opt/abiquo/tomcat/webapps/am/WEB-INF/classes/conf/config.xml")
+        self.addCopySpec("/opt/abiquo/tomcat/webapps/server/WEB-INF/classes/conf/config.xml")
+        self.addCopySpec("/opt/abiquo/tomcat/webapps/virtualfactory/WEB-INF/classes/conf/config.xml")
+        self.addCopySpec("/opt/abiquo/tomcat/webapps/vsm/WEB-INF/classes/conf/config.xml")
+        self.addCopySpec("/opt/abiquo/tomcat/webapps/nodecollector/WEB-INF/classes/conf/config.xml")
+        self.addCopySpec("/opt/abiquo/tomcat/conf/")
 
         #MySQL dump
-        jndiFile = open("/opt/abiquo-server/tomcat/webapps/server/META-INF/context.xml").read()
+        jndiFile = open("/opt/abiquo/tomcat/webapps/server/META-INF/context.xml").read()
         dbUsername, dbPassword = re.search(r'username="([^"]+)"\s+password="([^"]*)"', jndiFile).groups()
 
         dbSearch = re.search(r'url="[^:]+:[^:]+://(?P<host>[^:]+)(:(?P<port>[^/]+))?/(?P<schema>.+)\?.+"', jndiFile)
