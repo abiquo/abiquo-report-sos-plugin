@@ -21,7 +21,7 @@ class abiquo_server(sos.plugintools.PluginBase):
     """Abiquo server related information
     """
     def checkenabled(self):
-       if self.cInfo["policy"].pkgByName("abiquo-server") or os.path.exists"):
+       if self.cInfo["policy"].pkgByName("abiquo-server") or os.path.exists("/opt/abiquo/tomcat/webapps/server"):
           return True
        return False
 
@@ -46,7 +46,7 @@ class abiquo_server(sos.plugintools.PluginBase):
         self.addCopySpec("/opt/abiquo/tomcat/conf/")
 
         #MySQL dump
-        jndiFile = open("/opt/abiquo/tomcat/webapps/server/META-INF/context.xml").read()
+        jndiFile = open("/opt/abiquo/tomcat/conf/Catalina/localhost/server.xml").read()
         dbUsername, dbPassword = re.search(r'username="([^"]+)"\s+password="([^"]*)"', jndiFile).groups()
 
         dbSearch = re.search(r'url="[^:]+:[^:]+://(?P<host>[^:]+)(:(?P<port>[^/]+))?/(?P<schema>.+)\?.+"', jndiFile)
