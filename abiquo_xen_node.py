@@ -13,30 +13,22 @@
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 import sos.plugintools
-import os
+
 
 class abiquo_xen_node(sos.plugintools.PluginBase):
     """Abiquo xen node related information
     """
+
     def checkenabled(self):
-       if self.cInfo["policy"].pkgByName("abiquo-aim") and self.cInfo["policy"].pkgByName("xen"):
-          return True
-       return False
+        if self.cInfo["policy"].pkgByName("abiquo-aim") and self.cInfo["policy"].pkgByName("xen"):
+            return True
+        return False
 
     def setup(self):
         # Xen log
         self.addCopySpec("/var/log/xen/")
-        
-        #openwsmand conf
-        self.addCopySpec("/etc/abiquo-aim.ini")
-
-        #Libvirt conf
-        self.addCopySpec("/etc/libvirt/")
 
         #Xen conf
         self.addCopySpec("/etc/xen/")
-        
-        self.collectExtOutput("virsh capabilities")
-        self.collectExtOutput("virsh list --all")
 
         return

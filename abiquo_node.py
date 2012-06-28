@@ -13,26 +13,27 @@
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 import sos.plugintools
-import os
 
-class abiquo_kvm_node(sos.plugintools.PluginBase):
-    """Abiquo kvm node related information
+
+class abiquo_cloud_node(sos.plugintools.PluginBase):
+    """Abiquo cloud node related information
     """
+
     def checkenabled(self):
-       if self.cInfo["policy"].pkgByName("abiquo-aim") and self.cInfo["policy"].pkgByName("kmod-kvm"):
-          return True
-       return False
+        if self.cInfo["policy"].pkgByName("libvirt") and self.cInfo["policy"].pkgByName("abiquo-aim"):
+            return True
+        return False
 
     def setup(self):
-        # KVM log
+        # libvirt logs
         self.addCopySpec("/var/log/libvirt/")
-        
-        #openwsmand conf
+
+        # aim conf
         self.addCopySpec("/etc/abiquo-aim.ini")
 
-        #Libvirt conf
+        # libvirt conf
         self.addCopySpec("/etc/libvirt/")
-        
+
         self.collectExtOutput("virsh capabilities")
         self.collectExtOutput("virsh list --all")
 
