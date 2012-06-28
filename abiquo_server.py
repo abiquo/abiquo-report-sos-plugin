@@ -15,20 +15,26 @@
 import sos.plugintools
 import os
 import re
-import tempfile
+
 
 class abiquo_server(sos.plugintools.PluginBase):
     """Abiquo server related information
     """
+
+    optionList = [("full", "Get all the tomcat logs", "slow", False)]
+    optionList = [("logsize", "max size (MiB) to collect per log file", "", 0)]
+
     def checkenabled(self):
-       if self.cInfo["policy"].pkgByName("abiquo-core") or os.path.exists("/opt/abiquo/tomcat/webapps/"):
-          return True
-       return False
+        if self.cInfo["policy"].pkgByName("abiquo-core") or os.path.exists("/opt/abiquo/tomcat/webapps/server/"):
+            return True
+        return False
 
     def setup(self):
         # tomcat log
-        self.addCopySpec("/opt/abiquo/tomcat/logs/")
-
+        if self.isOptionEnabled("yumlist"):
+            self.addCopySpec("/opt/abiquo/tomcat/logs/*.log")
+        else:
+            self.addCopySpecLimit("/opt/abiquo/tomcat/logs/", sizelimit=self.isOptionEnabled("logsize"))
 
         #conf files
         self.addCopySpec("/opt/abiquo/config/")
@@ -44,7 +50,14 @@ class abiquo_server(sos.plugintools.PluginBase):
         if dbPort == None:
             dbPort = '3306'
         dbSchema = dbSearch.group('schema')
-        
-        self.collectExtOutput("mysqldump -h "+dbHost+" -P "+dbPort+" -u "+dbUsername+" --password="+dbPassword+" "+dbSchema)
+
+        self.collectExtOutput("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " " + dbSchema)
+        # rabbitmq queues status
+        self.collect.ExtOutput("rabbitmqctl list_queues")
+        # Abiquo server redis dump
+        self.addCopySpec("/var/lib/redis/dump.rdb")
+        # Abiquo version
+        self.addCopySpec("/etc/abiquo-install")
+        self.addCopySpec("/etc/abiquo-release")
 
         return
