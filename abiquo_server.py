@@ -34,7 +34,7 @@ class abiquo_server(sos.plugintools.PluginBase):
         if self.isOptionEnabled("full"):
             self.addCopySpecLimit("/opt/abiquo/tomcat/logs/", sizelimit=self.isOptionEnabled("logsize"))
         else:
-            self.addCopySpec("/opt/abiquo/tomcat/logs/*.log")
+            self.addCopySpecLimit("/opt/abiquo/tomcat/logs/*.log", sizelimit=self.isOptionEnabled("logsize"))
 
         #conf files
         self.addCopySpec("/opt/abiquo/config/")
@@ -53,7 +53,7 @@ class abiquo_server(sos.plugintools.PluginBase):
 
         self.collectExtOutput("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " " + dbSchema)
         # rabbitmq queues status
-        self.collect.ExtOutput("rabbitmqctl list_queues")
+        self.collectExtOutput("rabbitmqctl list_queues")
         # Abiquo server redis dump
         self.addCopySpec("/var/lib/redis/dump.rdb")
         # Abiquo version

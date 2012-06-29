@@ -32,7 +32,7 @@ class abiquo_rs(sos.plugintools.PluginBase):
         if self.isOptionEnabled("full"):
             self.addCopySpecLimit("/opt/abiquo/tomcat/logs/", sizelimit=self.isOptionEnabled("logsize"))
         else:
-            self.addCopySpec("/opt/abiquo/tomcat/logs/*.log")
+            self.addCopySpecLimit("/opt/abiquo/tomcat/logs/*.log", sizelimit=self.isOptionEnabled("logsize"))
 
         #conf files
         self.addCopySpec("/opt/abiquo/config/")
@@ -42,7 +42,7 @@ class abiquo_rs(sos.plugintools.PluginBase):
         self.addCopySpec("/var/lib/redis/dump.rdb")
 
         # Abiquo version
-        self.addCopySpec("/etc/abiquo-install")
+        self.addCopySpec("/etc/abiquo-installer")
         self.addCopySpec("/etc/abiquo-release")
 
         return
