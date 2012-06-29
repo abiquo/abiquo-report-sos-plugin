@@ -13,19 +13,17 @@
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 import sos.plugintools
-import os
-import re
 
 
-class abiquo_server(sos.plugintools.PluginBase):
-    """Abiquo server related information
+class abiquo_rs(sos.plugintools.PluginBase):
+    """Abiquo remote service related information
     """
 
     optionList = [("full", "Get all the tomcat logs", "slow", False),
                   ("logsize", "max size (MiB) to collect per log file", "", 0)]
 
     def checkenabled(self):
-        if self.cInfo["policy"].pkgByName("abiquo-server") or os.path.exists("/opt/abiquo/tomcat/webapps/server/"):
+        if self.cInfo["policy"].pkgByName("abiquo-remote-services") and not self.cInfo["policy"].pkgByName("abiquo-server"):
             return True
         return False
 
@@ -40,22 +38,9 @@ class abiquo_server(sos.plugintools.PluginBase):
         self.addCopySpec("/opt/abiquo/config/")
         self.addCopySpec("/opt/abiquo/tomcat/conf/")
 
-        #MySQL dump
-        jndiFile = open("/opt/abiquo/tomcat/conf/Catalina/localhost/server.xml").read()
-        dbUsername, dbPassword = re.search(r'username="([^"]+)"\s+password="([^"]*)"', jndiFile).groups()
-
-        dbSearch = re.search(r'url="[^:]+:[^:]+://(?P<host>[^:]+)(:(?P<port>[^/]+))?/(?P<schema>.+)\?.+"', jndiFile)
-        dbHost = dbSearch.group('host')
-        dbPort = dbSearch.group('port')
-        if dbPort == None:
-            dbPort = '3306'
-        dbSchema = dbSearch.group('schema')
-
-        self.collectExtOutput("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " " + dbSchema)
-        # rabbitmq queues status
-        self.collect.ExtOutput("rabbitmqctl list_queues")
-        # Abiquo server redis dump
+        # Abiquo remote service redis dump
         self.addCopySpec("/var/lib/redis/dump.rdb")
+
         # Abiquo version
         self.addCopySpec("/etc/abiquo-install")
         self.addCopySpec("/etc/abiquo-release")
