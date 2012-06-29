@@ -15,7 +15,7 @@
 import sos.plugintools
 
 
-class abiquo_cloud_node(sos.plugintools.PluginBase):
+class abiquo_node(sos.plugintools.PluginBase):
     """Abiquo cloud node related information
     """
 

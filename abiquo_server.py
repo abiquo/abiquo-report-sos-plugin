@@ -21,8 +21,8 @@ class abiquo_server(sos.plugintools.PluginBase):
     """Abiquo server related information
     """
 
-    optionList = [("full", "Get all the tomcat logs", "slow", False)]
-    optionList = [("logsize", "max size (MiB) to collect per log file", "", 0)]
+    optionList = [("full", "Get all the tomcat logs", "slow", False),
+                  ("logsize", "max size (MiB) to collect per log file", "", 0)]
 
     def checkenabled(self):
         if self.cInfo["policy"].pkgByName("abiquo-core") or os.path.exists("/opt/abiquo/tomcat/webapps/server/"):

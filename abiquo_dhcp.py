@@ -16,7 +16,7 @@ import sos.plugintools
 import os
 
 
-class abiquo_server(sos.plugintools.PluginBase):
+class abiquo_dhcp(sos.plugintools.PluginBase):
     """Abiquo server dhcp related information
     """
 
