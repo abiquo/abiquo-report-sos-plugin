@@ -21,7 +21,7 @@ class abiquo_server(sos.plugintools.PluginBase):
     """Abiquo server related information
     """
 
-    optionList = [("full", "Get all the tomcat logs", "slow", False),
+    optionList = [("full", "Get all the tomcat logs", "slow", True),
                   ("logsize", "max size (MiB) to collect per log file", "", 0)]
 
     def checkenabled(self):
@@ -35,6 +35,7 @@ class abiquo_server(sos.plugintools.PluginBase):
             self.addCopySpecLimit("/opt/abiquo/tomcat/logs/", sizelimit=self.isOptionEnabled("logsize"))
         else:
             self.addCopySpecLimit("/opt/abiquo/tomcat/logs/*.log", sizelimit=self.isOptionEnabled("logsize"))
+            self.addCopySpecLimit("/opt/abiquo/tomcat/logs/*.out", sizelimit=self.isOptionEnabled("logsize"))
 
         #conf files
         self.addCopySpec("/opt/abiquo/config/")
@@ -54,6 +55,7 @@ class abiquo_server(sos.plugintools.PluginBase):
         self.collectExtOutput("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " " + dbSchema)
         # rabbitmq queues status
         self.collectExtOutput("rabbitmqctl list_queues")
+        self.collectExtOutput("rabbitmqctl list_queues name consumers messages_ready messages_unacknowledged messages")
         # Abiquo server redis dump
         self.addCopySpec("/var/lib/redis/dump.rdb")
         # Abiquo version

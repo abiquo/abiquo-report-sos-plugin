@@ -19,7 +19,7 @@ class abiquo_rs(sos.plugintools.PluginBase):
     """Abiquo remote service related information
     """
 
-    optionList = [("full", "Get all the tomcat logs", "slow", False),
+    optionList = [("full", "Get all the tomcat logs", "slow", True),
                   ("logsize", "max size (MiB) to collect per log file", "", 0)]
 
     def checkenabled(self):
@@ -33,6 +33,7 @@ class abiquo_rs(sos.plugintools.PluginBase):
             self.addCopySpecLimit("/opt/abiquo/tomcat/logs/", sizelimit=self.isOptionEnabled("logsize"))
         else:
             self.addCopySpecLimit("/opt/abiquo/tomcat/logs/*.log", sizelimit=self.isOptionEnabled("logsize"))
+            self.addCopySpecLimit("/opt/abiquo/tomcat/logs/*.out", sizelimit=self.isOptionEnabled("logsize"))
 
         #conf files
         self.addCopySpec("/opt/abiquo/config/")
