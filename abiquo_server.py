@@ -42,7 +42,7 @@ class abiquo_server(sos.plugintools.PluginBase):
         self.addCopySpec("/opt/abiquo/tomcat/conf/")
 
         #MySQL dump
-        jndiFile = open("/opt/abiquo/tomcat/conf/Catalina/localhost/server.xml").read()
+        jndiFile = open("/opt/abiquo/tomcat/conf/Catalina/localhost/api.xml").read()
         dbUsername, dbPassword = re.search(r'username="([^"]+)"\s+password="([^"]*)"', jndiFile).groups()
 
         dbSearch = re.search(r'url="[^:]+:[^:]+://(?P<host>[^:]+)(:(?P<port>[^/]+))?/(?P<schema>.+)\?.+"', jndiFile)
