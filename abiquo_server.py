@@ -53,6 +53,7 @@ class abiquo_server(sos.plugintools.PluginBase):
         dbSchema = dbSearch.group('schema')
 
         self.collectExtOutput("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " " + dbSchema)
+        self.collectExtOutput("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " kinton_accounting --ignore-table=kinton_accounting.accounting_event_detail")
         # rabbitmq queues status
         self.collectExtOutput("rabbitmqctl list_queues")
         self.collectExtOutput("rabbitmqctl list_queues name consumers messages_ready messages_unacknowledged messages")
