@@ -12,10 +12,10 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-import sos.plugintools
+from sos.plugins import Plugin, RedHatPlugin
 
 
-class abiquo_node(sos.plugintools.PluginBase):
+class abiquo_node(Plugin, RedHatPlugin):
     """Abiquo cloud node related information
     """
 
@@ -26,15 +26,15 @@ class abiquo_node(sos.plugintools.PluginBase):
 
     def setup(self):
         # libvirt logs
-        self.addCopySpec("/var/log/libvirt/")
+        self.add_copy_spec("/var/log/libvirt/")
 
         # aim conf
-        self.addCopySpec("/etc/abiquo-aim.ini")
+        self.add_copy_spec("/etc/abiquo-aim.ini")
 
         # libvirt conf
-        self.addCopySpec("/etc/libvirt/")
+        self.add_copy_spec("/etc/libvirt/")
 
-        self.collectExtOutput("virsh capabilities")
-        self.collectExtOutput("virsh list --all")
+        self.add_cmd_output("virsh capabilities")
+        self.add_cmd_output("virsh list --all")
 
         return

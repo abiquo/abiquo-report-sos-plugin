@@ -12,11 +12,11 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-import sos.plugintools
+from sos.plugins import Plugin, RedHatPlugin
 import os
 
 
-class abiquo_dhcp(sos.plugintools.PluginBase):
+class abiquo_dhcp(Plugin, RedHatPlugin):
     """Abiquo server dhcp related information
     """
 
@@ -26,7 +26,7 @@ class abiquo_dhcp(sos.plugintools.PluginBase):
         return False
 
     def setup(self):
-        self.addCopySpec("/var/lib/dhcpd/dhcpd.leases")
-        self.addCopySpec("/var/lib/dhcpd/dhcpd.leases~")
+        self.add_copy_spec("/var/lib/dhcpd/dhcpd.leases")
+        self.add_copy_spec("/var/lib/dhcpd/dhcpd.leases~")
 
         return

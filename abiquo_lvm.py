@@ -12,10 +12,10 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-import sos.plugintools
+from sos.plugins import Plugin, RedHatPlugin
 
 
-class abiquo_lvm(sos.plugintools.PluginBase):
+class abiquo_lvm(Plugin, RedHatPlugin):
     """Abiquo LVM related information
     """
 
@@ -29,17 +29,17 @@ class abiquo_lvm(sos.plugintools.PluginBase):
 
     def setup(self):
         # tomcat log
-        if self.isOptionEnabled("full"):
-            self.addCopySpecLimit("/opt/abiquo/lvmiscsi/tomcat/logs", sizelimit=self.isOptionEnabled("logsize"))
+        if self.get_option("full"):
+            self.add_copy_spec_limit("/opt/abiquo/lvmiscsi/tomcat/logs", sizelimit=self.get_option("logsize"))
         else:
-            self.addCopySpecLimit("/opt/abiquo/lvmiscsi/tomcat/logs/*.log", sizelimit=self.isOptionEnabled("logsize"))
-            self.addCopySpecLimit("/opt/abiquo/lvmiscsi/tomcat/logs/*.out", sizelimit=self.isOptionEnabled("logsize"))
+            self.add_copy_spec_limit("/opt/abiquo/lvmiscsi/tomcat/logs/*.log", sizelimit=self.get_option("logsize"))
+            self.add_copy_spec_limit("/opt/abiquo/lvmiscsi/tomcat/logs/*.out", sizelimit=self.get_option("logsize"))
 
         #conf files
-        self.addCopySpec("/opt/abiquo/lvmiscsi/tomcat/conf")
+        self.add_copy_spec("/opt/abiquo/lvmiscsi/tomcat/conf")
 
         # Abiquo version
-        self.addCopySpec("/etc/abiquo-installer")
-        self.addCopySpec("/etc/abiquo-release")
+        self.add_copy_spec("/etc/abiquo-installer")
+        self.add_copy_spec("/etc/abiquo-release")
 
         return
