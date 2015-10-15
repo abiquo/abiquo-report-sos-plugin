@@ -12,12 +12,12 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-import sos.plugintools
+from sos.plugins import Plugin, RedHatPlugin
 import os
 import re
 
 
-class abiquo_server(sos.plugintools.PluginBase):
+class abiquo_server(Plugin, RedHatPlugin):
     """Abiquo server related information
     """
 
@@ -31,15 +31,15 @@ class abiquo_server(sos.plugintools.PluginBase):
 
     def setup(self):
         # tomcat log
-        if self.isOptionEnabled("full"):
-            self.addCopySpecLimit("/opt/abiquo/tomcat/logs/", sizelimit=self.isOptionEnabled("logsize"))
+        if self.get_option("full"):
+            self.add_copy_spec_limit("/opt/abiquo/tomcat/logs/", sizelimit=self.get_option("logsize"))
         else:
-            self.addCopySpecLimit("/opt/abiquo/tomcat/logs/*.log", sizelimit=self.isOptionEnabled("logsize"))
-            self.addCopySpecLimit("/opt/abiquo/tomcat/logs/*.out", sizelimit=self.isOptionEnabled("logsize"))
+            self.add_copy_spec_limit("/opt/abiquo/tomcat/logs/*.log", sizelimit=self.get_option("logsize"))
+            self.add_copy_spec_limit("/opt/abiquo/tomcat/logs/*.out", sizelimit=self.get_option("logsize"))
 
         #conf files
-        self.addCopySpec("/opt/abiquo/config/")
-        self.addCopySpec("/opt/abiquo/tomcat/conf/")
+        self.add_copy_spec("/opt/abiquo/config/")
+        self.add_copy_spec("/opt/abiquo/tomcat/conf/")
 
         #MySQL dump
         jndiFile = open("/opt/abiquo/tomcat/conf/Catalina/localhost/api.xml").read()
@@ -52,14 +52,15 @@ class abiquo_server(sos.plugintools.PluginBase):
             dbPort = '3306'
         dbSchema = dbSearch.group('schema')
 
-        self.collectExtOutput("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " " + dbSchema)
+        self.add_cmd_output("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " " + dbSchema)
+        self.add_cmd_output("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " kinton_accounting --ignore-table=kinton_accounting.accounting_event_detail")
         # rabbitmq queues status
-        self.collectExtOutput("rabbitmqctl list_queues")
-        self.collectExtOutput("rabbitmqctl list_queues name consumers messages_ready messages_unacknowledged messages")
+        self.add_cmd_output("rabbitmqctl list_queues")
+        self.add_cmd_output("rabbitmqctl list_queues name consumers messages_ready messages_unacknowledged messages")
         # Abiquo server redis dump
-        self.addCopySpec("/var/lib/redis/dump.rdb")
+        self.add_copy_spec("/var/lib/redis/dump.rdb")
         # Abiquo version
-        self.addCopySpec("/etc/abiquo-install")
-        self.addCopySpec("/etc/abiquo-release")
+        self.add_copy_spec("/etc/abiquo-install")
+        self.add_copy_spec("/etc/abiquo-release")
 
         return

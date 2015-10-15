@@ -12,10 +12,10 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-import sos.plugintools
+from sos.plugins import Plugin, RedHatPlugin
 
 
-class abiquo_xen_node(sos.plugintools.PluginBase):
+class abiquo_xen_node(Plugin, RedHatPlugin):
     """Abiquo xen node related information
     """
 
@@ -26,9 +26,9 @@ class abiquo_xen_node(sos.plugintools.PluginBase):
 
     def setup(self):
         # Xen log
-        self.addCopySpec("/var/log/xen/")
+        self.add_copy_spec("/var/log/xen/")
 
         #Xen conf
-        self.addCopySpec("/etc/xen/")
+        self.add_copy_spec("/etc/xen/")
 
         return
