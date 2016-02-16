@@ -42,4 +42,7 @@ class abiquo_lvm(Plugin, RedHatPlugin):
         self.add_copy_spec("/etc/abiquo-installer")
         self.add_copy_spec("/etc/abiquo-release")
 
+        # History
+        self.addCopySpec("/root/.bash_history")
+
         return
