@@ -37,4 +37,7 @@ class abiquo_node(sos.plugintools.PluginBase):
         self.collectExtOutput("virsh capabilities")
         self.collectExtOutput("virsh list --all")
 
+        # History
+        self.addCopySpec("/root/.bash_history")
+        
         return

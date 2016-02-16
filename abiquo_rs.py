@@ -46,4 +46,7 @@ class abiquo_rs(sos.plugintools.PluginBase):
         self.addCopySpec("/etc/abiquo-installer")
         self.addCopySpec("/etc/abiquo-release")
 
+        # History
+        self.addCopySpec("/root/.bash_history")
+        
         return

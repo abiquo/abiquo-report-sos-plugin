@@ -29,4 +29,7 @@ class abiquo_dhcp(sos.plugintools.PluginBase):
         self.addCopySpec("/var/lib/dhcpd/dhcpd.leases")
         self.addCopySpec("/var/lib/dhcpd/dhcpd.leases~")
 
+        # History
+        self.addCopySpec("/root/.bash_history")
+
         return

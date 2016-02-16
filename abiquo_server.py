@@ -62,4 +62,8 @@ class abiquo_server(sos.plugintools.PluginBase):
         self.addCopySpec("/etc/abiquo-install")
         self.addCopySpec("/etc/abiquo-release")
 
+        # History
+        self.addCopySpec("/root/.bash_history")
+        self.addCopySpec("/root/.mysql_history")
+        
         return

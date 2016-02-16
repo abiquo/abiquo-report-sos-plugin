@@ -42,4 +42,7 @@ class abiquo_cloud_node(sos.plugintools.PluginBase):
         # Abiquo remote service redis dump
         self.addCopySpec("/var/lib/redis/dump.rdb")
 
+        # History
+        self.addCopySpec("/root/.bash_history")
+
         return
