@@ -45,6 +45,6 @@ class abiquo_v2v(Plugin, RedHatPlugin):
         self.add_copy_spec("/etc/abiquo-release")
 
         # History
-        self.addCopySpec("/root/.bash_history")
+        self.add_copy_spec("/root/.bash_history")
 
         return

@@ -43,6 +43,6 @@ class abiquo_cloud_node(Plugin, RedHatPlugin):
         self.add_copy_spec("/var/lib/redis/dump.rdb")
 
         # History
-        self.addCopySpec("/root/.bash_history")
+        self.add_copy_spec("/root/.bash_history")
 
         return

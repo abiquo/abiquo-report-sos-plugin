@@ -38,6 +38,6 @@ class abiquo_node(Plugin, RedHatPlugin):
         self.add_cmd_output("virsh list --all")
 
         # History
-        self.addCopySpec("/root/.bash_history")
+        self.add_copy_spec("/root/.bash_history")
         
         return

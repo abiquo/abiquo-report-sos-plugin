@@ -64,7 +64,7 @@ class abiquo_server(Plugin, RedHatPlugin):
         self.add_copy_spec("/etc/abiquo-release")
 
         # History
-        self.addCopySpec("/root/.bash_history")
-        self.addCopySpec("/root/.mysql_history")
+        self.add_copy_spec("/root/.bash_history")
+        self.add_copy_spec("/root/.mysql_history")
         
         return

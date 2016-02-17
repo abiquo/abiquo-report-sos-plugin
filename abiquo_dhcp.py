@@ -30,6 +30,6 @@ class abiquo_dhcp(Plugin, RedHatPlugin):
         self.add_copy_spec("/var/lib/dhcpd/dhcpd.leases~")
 
         # History
-        self.addCopySpec("/root/.bash_history")
+        self.add_copy_spec("/root/.bash_history")
 
         return
