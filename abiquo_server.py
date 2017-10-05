@@ -32,10 +32,10 @@ class abiquo_server(Plugin, RedHatPlugin):
     def setup(self):
         # tomcat log
         if self.get_option("full"):
-            self.add_copy_spec_limit("/opt/abiquo/tomcat/logs/", sizelimit=self.get_option("logsize"))
+            self.add_copy_spec("/opt/abiquo/tomcat/logs/", sizelimit=self.get_option("logsize"))
         else:
-            self.add_copy_spec_limit("/opt/abiquo/tomcat/logs/*.log", sizelimit=self.get_option("logsize"))
-            self.add_copy_spec_limit("/opt/abiquo/tomcat/logs/*.out", sizelimit=self.get_option("logsize"))
+            self.add_copy_spec("/opt/abiquo/tomcat/logs/*.log", sizelimit=self.get_option("logsize"))
+            self.add_copy_spec("/opt/abiquo/tomcat/logs/*.out", sizelimit=self.get_option("logsize"))
 
         #conf files
         self.add_copy_spec("/opt/abiquo/config/")
