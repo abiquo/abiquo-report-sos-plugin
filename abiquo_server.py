@@ -11,7 +11,7 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
+from abiquo_log_time import abiquo_log_filter
 from sos.plugins import Plugin, RedHatPlugin
 import os
 import re
@@ -21,8 +21,11 @@ class abiquo_server(Plugin, RedHatPlugin):
     """Abiquo server related information
     """
 
-    optionList = [("full", "Get all the tomcat logs", "slow", True),
-                  ("logsize", "max size (MiB) to collect per log file", "", 0)]
+    option_list = [
+        ("full", "Get all the tomcat logs", "slow", True),
+        ("days", "Number of days to collect", "slow",7),
+        ("logsize", "max size (MiB) to collect per log file", "", 0),
+    ]
 
     def checkenabled(self):
         if self.cInfo["policy"].pkgByName("abiquo-server") or os.path.exists("/opt/abiquo/tomcat/webapps/server/"):
@@ -30,9 +33,11 @@ class abiquo_server(Plugin, RedHatPlugin):
         return False
 
     def setup(self):
-        # tomcat log
+        #tomcat logs, default 7 days
+        filestocollect = abiquo_log_filter("/opt/abiquo/tomcat/logs/", self.get_option("days"))
         if self.get_option("full"):
-            self.add_copy_spec("/opt/abiquo/tomcat/logs/", sizelimit=self.get_option("logsize"))
+           for a in filestocollect:
+               self.add_copy_spec(a, sizelimit=self.get_option("logsize"))
         else:
             self.add_copy_spec("/opt/abiquo/tomcat/logs/*.log", sizelimit=self.get_option("logsize"))
             self.add_copy_spec("/opt/abiquo/tomcat/logs/*.out", sizelimit=self.get_option("logsize"))

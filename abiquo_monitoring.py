@@ -18,9 +18,11 @@ from sos.plugins import Plugin, RedHatPlugin
 class abiquo_monitoring(Plugin, RedHatPlugin):
     """Abiquo monitoring appliance related information
     """
-
-    optionList = [("full", "Get all platform logs", "slow", True),
-                  ("logsize", "max size (MiB) to collect per log file", "", 0)]
+    option_list = [
+        ("full", "Get all the tomcat logs", "slow", True),
+        ("days", "Number of days to collect", "slow",7),
+        ("logsize", "max size (MiB) to collect per log file", "", 0),
+    ]
 
     def checkenabled(self):
         if self.cInfo["policy"].pkgByName("abiquo-delorean") and self.cInfo["policy"].pkgByName("abiquo-emmett"):
