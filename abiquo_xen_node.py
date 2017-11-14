@@ -20,15 +20,16 @@ class abiquo_xen_node(Plugin, RedHatPlugin):
     """
 
     def checkenabled(self):
-        if self.cInfo["policy"].pkgByName("abiquo-aim") and self.cInfo["policy"].pkgByName("xen"):
-            return True
+        if self.is_installed("abiquo-aim") and self.is_installed("xen"):
+           return True
         return False
 
     def setup(self):
-        # Xen log
-        self.add_copy_spec("/var/log/xen/")
+        if self.checkenabled():
+            # Xen log
+            self.add_copy_spec("/var/log/xen/")
 
-        #Xen conf
-        self.add_copy_spec("/etc/xen/")
+            #Xen conf
+            self.add_copy_spec("/etc/xen/")
 
         return

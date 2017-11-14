@@ -22,14 +22,15 @@ class abiquo_dhcp(Plugin, RedHatPlugin):
 
     def checkenabled(self):
         if os.path.exists("/var/lib/dhcpd/dhcpd.leases"):
-            return True
+           return True
         return False
 
     def setup(self):
-        self.add_copy_spec("/var/lib/dhcpd/dhcpd.leases")
-        self.add_copy_spec("/var/lib/dhcpd/dhcpd.leases~")
+        if self.checkenabled():
+            self.add_copy_spec("/var/lib/dhcpd/dhcpd.leases")
+            self.add_copy_spec("/var/lib/dhcpd/dhcpd.leases~")
 
-        # History
-        self.add_copy_spec("/root/.bash_history")
+            # History
+            self.add_copy_spec("/root/.bash_history")
 
         return

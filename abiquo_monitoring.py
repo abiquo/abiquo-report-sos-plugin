@@ -18,36 +18,38 @@ from sos.plugins import Plugin, RedHatPlugin
 class abiquo_monitoring(Plugin, RedHatPlugin):
     """Abiquo monitoring appliance related information
     """
+
     option_list = [
         ("full", "Get all the tomcat logs", "slow", True),
-        ("days", "Number of days to collect", "slow",7),
+        ("days", "Number of days to collect", "slow", 7),
         ("logsize", "max size (MiB) to collect per log file", "", 0),
     ]
 
     def checkenabled(self):
-        if self.cInfo["policy"].pkgByName("abiquo-delorean") and self.cInfo["policy"].pkgByName("abiquo-emmett"):
-            return True
+        if self.is_installed("abiquo-delorean") or self.is_installed("abiquo-emmett"):
+           return True
         return False
 
     def setup(self):
-        # emmett/delorean, cassandra, kairosdb logs
-        if self.get_option("full"):
-            self.add_copy_spec("/logs/", sizelimit=self.get_option("logsize"))
-            self.add_copy_spec("/var/log/cassandra/", sizelimit=self.get_option("logsize"))
-            self.add_copy_spec("/opt/kairosdb/log/", sizelimit=self.get_option("logsize"))
-        else:
-            self.add_copy_spec("/logs/*.log", sizelimit=self.get_option("logsize"))
-            self.add_copy_spec("/var/log/cassandra/*.log", sizelimit=self.get_option("logsize"))
-            self.add_copy_spec("/opt/kairosdb/log/*.log", sizelimit=self.get_option("logsize"))
+        if self.checkenabled():
+            # emmett/delorean, cassandra, kairosdb logs
+            if self.get_option("full"):
+                self.add_copy_spec("/logs/", sizelimit=self.get_option("logsize"))
+                self.add_copy_spec("/var/log/cassandra/", sizelimit=self.get_option("logsize"))
+                self.add_copy_spec("/opt/kairosdb/log/", sizelimit=self.get_option("logsize"))
+            else:
+                self.add_copy_spec("/logs/*.log", sizelimit=self.get_option("logsize"))
+                self.add_copy_spec("/var/log/cassandra/*.log", sizelimit=self.get_option("logsize"))
+                self.add_copy_spec("/opt/kairosdb/log/*.log", sizelimit=self.get_option("logsize"))
 
-        #conf files
-        self.add_copy_spec([
-            "/etc/abiquo/watchtower/",
-            "/opt/kairosdb/conf/",
-            "/etc/cassandra/conf/cassandra.yaml",
-        ])
+            #conf files
+            self.add_copy_spec([
+                "/etc/abiquo/watchtower/",
+                "/opt/kairosdb/conf/",
+                "/etc/cassandra/conf/cassandra.yaml",
+            ])
  
-        # History
-        self.add_copy_spec("/root/.bash_history")
+            # History
+            self.add_copy_spec("/root/.bash_history")
 
         return

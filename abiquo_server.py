@@ -11,6 +11,7 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 from abiquo_log_time import abiquo_log_filter
 from sos.plugins import Plugin, RedHatPlugin
 import os
@@ -28,48 +29,49 @@ class abiquo_server(Plugin, RedHatPlugin):
     ]
 
     def checkenabled(self):
-        if self.cInfo["policy"].pkgByName("abiquo-server") or os.path.exists("/opt/abiquo/tomcat/webapps/server/"):
-            return True
+        if self.is_installed("abiquo-server") or os.path.exists("/opt/abiquo/tomcat/webapps/server"):
+           return True
         return False
 
     def setup(self):
-        #tomcat logs, default 7 days
-        filestocollect = abiquo_log_filter("/opt/abiquo/tomcat/logs/", self.get_option("days"))
-        if self.get_option("full"):
-           for a in filestocollect:
-               self.add_copy_spec(a, sizelimit=self.get_option("logsize"))
-        else:
-            self.add_copy_spec("/opt/abiquo/tomcat/logs/*.log", sizelimit=self.get_option("logsize"))
-            self.add_copy_spec("/opt/abiquo/tomcat/logs/*.out", sizelimit=self.get_option("logsize"))
+        if self.checkenabled():
+            #tomcat logs, default 7 days
+            filestocollect = abiquo_log_filter("/opt/abiquo/tomcat/logs/", self.get_option("days"))
+            if self.get_option("full"):
+                for a in filestocollect:
+                    self.add_copy_spec(a, sizelimit=self.get_option("logsize"))
+            else:
+                self.add_copy_spec("/opt/abiquo/tomcat/logs/*.log", sizelimit=self.get_option("logsize"))
+                self.add_copy_spec("/opt/abiquo/tomcat/logs/*.out", sizelimit=self.get_option("logsize"))
 
-        #conf files
-        self.add_copy_spec("/opt/abiquo/config/")
-        self.add_copy_spec("/opt/abiquo/tomcat/conf/")
+            #conf files
+            self.add_copy_spec("/opt/abiquo/config/")
+            self.add_copy_spec("/opt/abiquo/tomcat/conf/")
 
-        #MySQL dump
-        jndiFile = open("/opt/abiquo/tomcat/conf/Catalina/localhost/api.xml").read()
-        dbUsername, dbPassword = re.search(r'username="([^"]+)"\s+password="([^"]*)"', jndiFile).groups()
+            #MySQL dump
+            jndiFile = open("/opt/abiquo/tomcat/conf/Catalina/localhost/api.xml").read()
+            dbUsername, dbPassword = re.search(r'username="([^"]+)"\s+password="([^"]*)"', jndiFile).groups()
 
-        dbSearch = re.search(r'url="[^:]+:[^:]+://(?P<host>[^:]+)(:(?P<port>[^/]+))?/(?P<schema>.+)\?.+"', jndiFile)
-        dbHost = dbSearch.group('host')
-        dbPort = dbSearch.group('port')
-        if dbPort == None:
-            dbPort = '3306'
-        dbSchema = dbSearch.group('schema')
+            dbSearch = re.search(r'url="[^:]+:[^:]+://(?P<host>[^:]+)(:(?P<port>[^/]+))?/(?P<schema>.+)\?.+"', jndiFile)
+            dbHost = dbSearch.group('host')
+            dbPort = dbSearch.group('port')
+            if dbPort == None:
+                dbPort = '3306'
+            dbSchema = dbSearch.group('schema')
 
-        self.add_cmd_output("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " " + dbSchema)
-        self.add_cmd_output("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " kinton_accounting --ignore-table=kinton_accounting.accounting_event_detail")
-        # rabbitmq queues status
-        self.add_cmd_output("rabbitmqctl list_queues")
-        self.add_cmd_output("rabbitmqctl list_queues name consumers messages_ready messages_unacknowledged messages")
-        # Abiquo server redis dump
-        self.add_copy_spec("/var/lib/redis/dump.rdb")
-        # Abiquo version
-        self.add_copy_spec("/etc/abiquo-install")
-        self.add_copy_spec("/etc/abiquo-release")
+            self.add_cmd_output("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " " + dbSchema)
+            self.add_cmd_output("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " kinton_accounting --ignore-table=kinton_accounting.accounting_event_detail")
+            # rabbitmq queues status
+            self.add_cmd_output("rabbitmqctl list_queues")
+            self.add_cmd_output("rabbitmqctl list_queues name consumers messages_ready messages_unacknowledged messages")
+            # Abiquo server redis dump
+            self.add_copy_spec("/var/lib/redis/dump.rdb")
+            # Abiquo version
+            self.add_copy_spec("/etc/abiquo-install")
+            self.add_copy_spec("/etc/abiquo-release")
 
-        # History
-        self.add_copy_spec("/root/.bash_history")
-        self.add_copy_spec("/root/.mysql_history")
+            # History
+            self.add_copy_spec("/root/.bash_history")
+            self.add_copy_spec("/root/.mysql_history")
         
         return

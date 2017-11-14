@@ -11,9 +11,9 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 from abiquo_log_time import abiquo_log_filter
 from sos.plugins import Plugin, RedHatPlugin
-
 
 class abiquo_rs(Plugin, RedHatPlugin):
     """Abiquo remote service related information
@@ -26,32 +26,33 @@ class abiquo_rs(Plugin, RedHatPlugin):
     ]
 
     def checkenabled(self):
-        if self.cInfo["policy"].pkgByName("abiquo-remote-services") and not self.cInfo["policy"].pkgByName("abiquo-server"):
-            return True
+        if self.is_installed("abiquo-remote-services") and not self.is_installed("abiquo-server"):
+           return True
         return False
 
     def setup(self):
-        #tomcat logs, default 7 days
-        filestocollect = abiquo_log_filter("/opt/abiquo/tomcat/logs/", self.get_option("days"))
-        if self.get_option("full"):
-           for a in filestocollect:
-               self.add_copy_spec(a, sizelimit=self.get_option("logsize"))
-        else:
-            self.add_copy_spec("/opt/abiquo/tomcat/logs/*.log", sizelimit=self.get_option("logsize"))
-            self.add_copy_spec("/opt/abiquo/tomcat/logs/*.out", sizelimit=self.get_option("logsize"))
+        if self.checkenabled():
+            #tomcat logs, default 7 days
+            filestocollect = abiquo_log_filter("/opt/abiquo/tomcat/logs/", self.get_option("days"))
+            if self.get_option("full"):
+                for a in filestocollect:
+                    self.add_copy_spec(a, sizelimit=self.get_option("logsize"))
+            else:
+                self.add_copy_spec("/opt/abiquo/tomcat/logs/*.log", sizelimit=self.get_option("logsize"))
+                self.add_copy_spec("/opt/abiquo/tomcat/logs/*.out", sizelimit=self.get_option("logsize"))
 
-        #conf files
-        self.add_copy_spec("/opt/abiquo/config/")
-        self.add_copy_spec("/opt/abiquo/tomcat/conf/")
+            #conf files
+            self.add_copy_spec("/opt/abiquo/config/")
+            self.add_copy_spec("/opt/abiquo/tomcat/conf/")
 
-        # Abiquo remote service redis dump
-        self.add_copy_spec("/var/lib/redis/dump.rdb")
+            # Abiquo remote service redis dump
+            self.add_copy_spec("/var/lib/redis/")
 
-        # Abiquo version
-        self.add_copy_spec("/etc/abiquo-installer")
-        self.add_copy_spec("/etc/abiquo-release")
+            # Abiquo version
+            self.add_copy_spec("/etc/abiquo-installer")
+            self.add_copy_spec("/etc/abiquo-release")
 
-        # History
-        self.add_copy_spec("/root/.bash_history")
+            # History
+            self.add_copy_spec("/root/.bash_history")
         
         return
