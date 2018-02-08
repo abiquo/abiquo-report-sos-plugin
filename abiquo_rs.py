@@ -26,7 +26,7 @@ class abiquo_rs(Plugin, RedHatPlugin):
     ]
 
     def checkenabled(self):
-        if self.is_installed("abiquo-remote-services") and not self.is_installed("abiquo-server"):
+        if self.is_installed("abiquo-am") or self.is_installed("abiquo-cpp") or self.is_installed("abiquo-nodecollector") or self.is_installed("abiquo-ssm") or self.is_installed("abiquo-virtualfactory") or self.is_installed("abiquo-vsm"):
            return True
         return False
 
