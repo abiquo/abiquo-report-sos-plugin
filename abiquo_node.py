@@ -20,24 +20,25 @@ class abiquo_node(Plugin, RedHatPlugin):
     """
 
     def checkenabled(self):
-        if self.cInfo["policy"].pkgByName("libvirt") and self.cInfo["policy"].pkgByName("abiquo-aim"):
-            return True
+        if self.is_installed("libvirt") and self.is_installed("abiquo-aim"):
+           return True
         return False
 
     def setup(self):
-        # libvirt logs
-        self.add_copy_spec("/var/log/libvirt/")
+        if self.checkenabled():
+            # libvirt logs
+            self.add_copy_spec("/var/log/libvirt/")
 
-        # aim conf
-        self.add_copy_spec("/etc/abiquo-aim.ini")
+            # aim conf
+            self.add_copy_spec("/etc/abiquo-aim.ini")
 
-        # libvirt conf
-        self.add_copy_spec("/etc/libvirt/")
+            # libvirt conf
+            self.add_copy_spec("/etc/libvirt/")
 
-        self.add_cmd_output("virsh capabilities")
-        self.add_cmd_output("virsh list --all")
+            self.add_cmd_output("virsh capabilities")
+            self.add_cmd_output("virsh list --all")
 
-        # History
-        self.add_copy_spec("/root/.bash_history")
+            # History
+            self.add_copy_spec("/root/.bash_history")
         
         return

@@ -12,25 +12,16 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-from sos.plugins import Plugin, RedHatPlugin
 import os
+import time
 
-
-class abiquo_dhcp(Plugin, RedHatPlugin):
-    """Abiquo server dhcp related information
-    """
-
-    def checkenabled(self):
-        if os.path.exists("/var/lib/dhcpd/dhcpd.leases"):
-           return True
-        return False
-
-    def setup(self):
-        if self.checkenabled():
-            self.add_copy_spec("/var/lib/dhcpd/dhcpd.leases")
-            self.add_copy_spec("/var/lib/dhcpd/dhcpd.leases~")
-
-            # History
-            self.add_copy_spec("/root/.bash_history")
-
-        return
+#choose only files from provided path which were modified < days
+def abiquo_log_filter(path, days):
+    now = time.time()
+    file_list = [os.path.join(path,i) for i in os.listdir(path)]
+    collect_list = []
+    for i in file_list:
+        modification_time = os.path.getmtime(i)
+        if (now - modification_time) // (24*3600) < days:
+            collect_list.append(i)
+    return collect_list
