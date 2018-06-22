@@ -83,8 +83,8 @@ class abiquo_sos(Plugin, RedHatPlugin):
                     dbHost = self.find_between(xml_params['url'], 'mysql://', ':')
                     dbPort = self.find_between(xml_params['url'], dbHost + ':', '/')
                     dbSchema = 'kinton'
-                self.add_cmd_output("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " " + dbSchema)
-                self.add_cmd_output("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " kinton_accounting --ignore-table=kinton_accounting.accounting_event_detail")
+                self.add_cmd_output("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " " + dbSchema, suggest_filename="kinton_dump.sql")
+                self.add_cmd_output("mysqldump --routines --triggers -h " + dbHost + " -P " + dbPort + " -u " + dbUsername + " --password=" + dbPassword + " kinton_accounting --ignore-table=kinton_accounting.accounting_event_detail", suggest_filename="kinton_dump_ignore_accounting_event_detail.sql")
 
         # rabbitmq queues status
         if self.is_installed("rabbitmq-server"):
