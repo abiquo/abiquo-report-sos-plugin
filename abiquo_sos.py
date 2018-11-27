@@ -91,6 +91,10 @@ class abiquo_sos(Plugin, RedHatPlugin):
             self.add_cmd_output("rabbitmqctl list_queues")
             self.add_cmd_output("rabbitmqctl list_queues name consumers messages_ready messages_unacknowledged messages")
 
+        # get jinfo sysprops
+        if os.path.exists("/opt/abiquo/tomcat"):
+            self.add_cmd_output("sudo -u tomcat sh -c '/usr/java/default/bin/jinfo -sysprops $(pgrep java)'")
+
         # vm_repository find -ls
         if os.path.exists("/opt/abiquo/config/abiquo.properties"):
             propsFile = open("/opt/abiquo/config/abiquo.properties").read()
