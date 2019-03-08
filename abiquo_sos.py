@@ -85,8 +85,8 @@ class abiquo_sos(Plugin, RedHatPlugin):
                 dump = 'mysqldump --routines --triggers -h %s -P %s -u %s --password="%s" %s'
                 dump_kinton     = dump % (dbHost, dbPort, dbUsername, dbPassword, "kinton")
                 dump_accounting = dump % (dbHost, dbPort, dbUsername, dbPassword, "kinton_accounting --ignore-table=kinton_accounting.accounting_event_detail")
-                self.add_cmd_output("sh -c '%s | gzip'" % (dump_kinton)    , binary=True, suggest_filename="kinton_dump.sql.gz")
-                self.add_cmd_output("sh -c '%s | gzip'" % (dump_accounting), binary=True, suggest_filename="accounting_dump.sql.gz")
+                self.add_cmd_output("sh -c '%s 2>&1 | gzip'" % (dump_kinton)    , binary=True, suggest_filename="kinton_dump.sql.gz")
+                self.add_cmd_output("sh -c '%s 2>&1 | gzip'" % (dump_accounting), binary=True, suggest_filename="accounting_dump.sql.gz")
 
         # rabbitmq queues status
         if self.is_installed("rabbitmq-server"):
