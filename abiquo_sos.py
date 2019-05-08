@@ -61,6 +61,12 @@ class abiquo_sos(Plugin, RedHatPlugin):
             for a in filestocollect:
                 self.add_copy_spec(a)
 
+        # Abiquo tomcat logs, deployed whith OVA where we store logs in /var/log
+        if os.path.exists("/var/log/abiquo"):
+            filestocollect = self.abiquo_log_filter("/var/log/abiquo/", self.get_option("days"))
+            for a in filestocollect:
+                self.add_copy_spec(a)
+
         # Abiquo config files
         self.copy_if_exists("/opt/abiquo/tomcat/conf")
         self.copy_if_exists("/opt/abiquo/config")
