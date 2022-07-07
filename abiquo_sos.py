@@ -127,6 +127,9 @@ class abiquo_sos(Plugin, RedHatPlugin):
         self.copy_if_exists("/opt/abiquo/tomcat/webapps/bpm-async/WEB-INF/classes/logback.xml")
         self.copy_if_exists("/opt/abiquo/tomcat/webapps/virtualfactory/WEB-INF/classes/logback.xml")
 
+        # UI configuration
+        self.copy_if_exists("/var/www/")
+
         # monitoring conf, logs, default 7 days
         self.copy_if_exists("/etc/abiquo/watchtower/")
         self.copy_if_exists("/etc/cassandra/")
